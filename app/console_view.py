@@ -11,6 +11,7 @@ class ConsoleView:
     __computer_vision: ComputerVision
 
     def __init__(self) -> None:
+        self.logged = False
         print("Starting application")
         self.__build()
         print("Application Started!")
@@ -26,7 +27,7 @@ class ConsoleView:
                 exit = True
 
     def __options(self):
-        print("1 - Salvar Imagem no Imgur")
+        print("1 - Salvar Imagem no Imgur (Precisa estar logado no Imgur)")
         print("2 - Analizar Imagem")
         print("3 - Analizar Imagem por dominio")
         print("4 - Imagens pre-enviadas")
@@ -36,8 +37,12 @@ class ConsoleView:
         try:
             entry = int(input("Opção: "))
             if entry == 1:
-                url = input("Path da Imagem: ")
-                self.__upload_image.send(url)
+                if self.logged:
+                    url = input("Path da Imagem: ")
+                    self.__upload_image.send(url)
+
+                else:
+                    print("Voce nao esta logado!")
 
             elif entry == 2:
                 url = input("URL da Imagem: ")
@@ -58,7 +63,12 @@ class ConsoleView:
             self.__input_options()
 
     def __build(self):
-        self.__upload_image = UploadImage()
+        login = input("Voce deseja logar no Imgur? sim/nao: ")
+
+        if login == "sim":
+            self.__upload_image = UploadImage()
+            self.logged = True
+
         self.__computer_vision = ComputerVision()
 
     def __print_url_images(self):
